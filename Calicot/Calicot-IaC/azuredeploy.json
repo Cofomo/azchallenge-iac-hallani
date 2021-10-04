@@ -1,0 +1,304 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "subscriptionId": {
+      "type": "string"
+    },
+    "serverFarmResourceGroup": {
+      "type": "string"
+    },
+    "storageAccountType": {
+      "type": "string",
+      "defaultValue": "Standard_LRS"
+    },
+    "storageAccountKind": {
+      "type": "string",
+      "defaultValue": "StorageV2"
+    },
+    "storageAccountAccessTier": {
+      "type": "string",
+      "defaultValue": "Hot"
+    },
+    "functionAppSku": {
+      "type": "string",
+      "defaultValue": "Dynamic"
+    },
+    "functionAppSkuCode": {
+      "type": "string",
+      "defaultValue": "Y1"
+    },
+    "webAppSku": {
+      "type": "string",
+      "defaultValue": "Free"
+    },
+    "webAppSkuCode": {
+      "type": "string",
+      "defaultValue": "F1"
+    },
+    "webAppKind": {
+      "type": "string",
+      "defaultValue": "windows"
+    },
+    "webAppCurrentStack": {
+      "type": "string",
+      "defaultValue": "dotnetcore"
+    },
+    "sqlServerAdministratorLogin": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sqlServerAdministratorLoginPassword": {
+      "type": "securestring"
+    },
+    "databaseSkuName": {
+      "type": "string",
+      "defaultValue": "Basic"
+    },
+    "databaseTier": {
+      "type": "string",
+      "defaultValue": "Basic"
+    },
+    "databaseCapacity": {
+      "type": "int",
+      "defaultValue": 5
+    },
+    "serviceBusTier": {
+      "type": "string",
+      "defaultValue": "Basic"
+    },
+    "serviceBusCapacity": {
+      "type": "int",
+      "defaultValue": 1
+    }
+  },
+  "variables": {
+    "storageAccountName": "[concat('storage', uniqueString(resourceGroup().id))]",
+    "functionAppName": "[concat('functionapp', uniqueString(resourceGroup().id))]",
+    "functionAppHostingPlanName": "ASP-azchallengehallanidevrg-bf18",
+    "webAppName": "[concat('calicot-webapp', uniqueString(resourceGroup().id))]",
+    "webAppHostingPlanName": "ASP-azchallengehallanidevrg-8894",
+    "sqlServerName": "[concat('sqlserver', uniqueString(resourceGroup().id))]",
+    "databaseName": "Calicot",
+    "serviceBusName": "[concat('servicebus', uniqueString(resourceGroup().id))]"
+  },
+  "resources": [
+    {
+      "name": "[variables('storageAccountName')]",
+      "type": "Microsoft.Storage/storageAccounts",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2021-06-01",
+      "sku": {
+        "name": "[parameters('storageAccountType')]"
+      },
+      "dependsOn": [],
+      "tags": {
+        "displayName": "storage-account"
+      },
+      "kind": "[parameters('storageAccountKind')]",
+      "properties": {
+        "accessTier": "[parameters('storageAccountAccessTier')]"
+      }
+    },
+    {
+      "apiVersion": "2018-11-01",
+      "name": "[variables('functionAppName')]",
+      "type": "Microsoft.Web/sites",
+      "kind": "functionapp",
+      "location": "[resourceGroup().location]",
+      "tags": {
+        "displayName": "function-app"
+      },
+      "dependsOn": [
+        "[concat('Microsoft.Web/serverfarms/', variables('functionAppHostingPlanName'))]",
+        "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
+      ],
+      "properties": {
+        "name": "[variables('functionAppName')]",
+        "siteConfig": {
+          "appSettings": [
+            {
+              "name": "FUNCTIONS_EXTENSION_VERSION",
+              "value": "~3"
+            },
+            {
+              "name": "FUNCTIONS_WORKER_RUNTIME",
+              "value": "dotnet"
+            },
+            {
+              "name": "AzureWebJobsStorage",
+              "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2019-06-01').keys[0].value,';EndpointSuffix=','core.windows.net')]"
+            },
+            {
+              "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
+              "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2019-06-01').keys[0].value,';EndpointSuffix=','core.windows.net')]"
+            },
+            {
+              "name": "WEBSITE_CONTENTSHARE",
+              "value": "[concat(toLower(variables('functionAppName')), 'b9e1')]"
+            }
+          ],
+          "use32BitWorkerProcess": true
+        },
+        "serverFarmId": "[concat('/subscriptions/', parameters('subscriptionId'),'/resourcegroups/', parameters('serverFarmResourceGroup'), '/providers/Microsoft.Web/serverfarms/', variables('functionAppHostingPlanName'))]",
+        "clientAffinityEnabled": false
+      }
+    },
+    {
+      "apiVersion": "2018-11-01",
+      "name": "[variables('functionAppHostingPlanName')]",
+      "type": "Microsoft.Web/serverfarms",
+      "location": "[resourceGroup().location]",
+      "kind": "",
+      "tags": {
+        "displayName": "function-app-hosting-plan"
+      },
+      "dependsOn": [],
+      "properties": {
+        "name": "[variables('functionAppHostingPlanName')]",
+        "workerSize": 0,
+        "workerSizeId": 0,
+        "numberOfWorkers": 1
+      },
+      "sku": {
+        "Tier": "[parameters('functionAppSku')]",
+        "Name": "[parameters('functionAppSkuCode')]"
+      }
+    },
+
+    {
+      "apiVersion": "2018-11-01",
+      "name": "[variables('webAppName')]",
+      "type": "Microsoft.Web/sites",
+      "location": "[resourceGroup().location]",
+      "tags": {
+        "displayName": "web-app"
+      },
+      "dependsOn": [
+        "[concat('Microsoft.Web/serverfarms/', variables('webAppHostingPlanName'))]"
+      ],
+      "properties": {
+        "name": "[variables('webAppName')]",
+        "siteConfig": {
+          "appSettings": [
+            {
+              "name": "ANCM_ADDITIONAL_ERROR_PAGE_LINK",
+              "value": "[concat('https://', variables('webAppName'), '.scm.azurewebsites.net/detectors?type=tools&name=eventviewer')]"
+            }
+          ],
+          "metadata": [
+            {
+              "name": "CURRENT_STACK",
+              "value": "[parameters('webAppCurrentStack')]"
+            }
+          ],
+          "phpVersion": "OFF",
+          "alwaysOn": false
+        },
+        "serverFarmId": "[concat('/subscriptions/', parameters('subscriptionId'),'/resourcegroups/', parameters('serverFarmResourceGroup'), '/providers/Microsoft.Web/serverfarms/', variables('webAppHostingPlanName'))]",
+        "clientAffinityEnabled": true
+      }
+    },
+    {
+      "apiVersion": "2018-11-01",
+      "name": "[variables('webAppHostingPlanName')]",
+      "type": "Microsoft.Web/serverfarms",
+      "location": "[resourceGroup().location]",
+      "kind": "[parameters('webAppKind')]",
+      "tags": {
+        "displayName": "web-app-hosting-plan"
+      },
+      "dependsOn": [],
+      "properties": {
+        "name": "[variables('webAppHostingPlanName')]",
+        "workerSize": "0",
+        "workerSizeId": "0",
+        "numberOfWorkers": "1"
+      },
+      "sku": {
+        "Tier": "[parameters('webAppSku')]",
+        "Name": "[parameters('webAppSkuCode')]"
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers",
+      "apiVersion": "2020-11-01-preview",
+      "name": "[variables('sqlServerName')]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "version": "12.0",
+        "administratorLogin": "[parameters('sqlServerAdministratorLogin')]",
+        "administratorLoginPassword": "[parameters('sqlServerAdministratorLoginPassword')]"
+      },
+      "tags": {
+        "displayName": "sql-server"
+      },
+      "resources": [
+        {
+          "condition": true,
+          "type": "firewallRules",
+          "apiVersion": "2014-04-01-preview",
+          "name": "AllowAllWindowsAzureIps",
+          "location": "[resourceGroup().location]",
+          "dependsOn": [
+            "[resourceId('Microsoft.Sql/servers', variables('sqlServerName'))]"
+          ],
+          "properties": {
+            "endIpAddress": "0.0.0.0",
+            "startIpAddress": "0.0.0.0"
+          }
+        }
+      ]
+    },
+    {
+      "type": "Microsoft.Sql/servers/databases",
+      "apiVersion": "2021-02-01-preview",
+      "location": "[resourceGroup().location]",
+      "tags": {
+        "displayName": "sql-server-database"
+      },
+      "dependsOn": [
+        "[concat('Microsoft.Sql/servers/', variables('sqlServerName'))]"
+      ],
+      "name": "[concat(variables('sqlServerName'), '/', variables('databaseName'))]",
+      "properties": {
+        "collation": "SQL_Latin1_General_CP1_CI_AS",
+        "maxSizeBytes": 2147483648,
+        "sampleName": "",
+        "zoneRedundant": false,
+        "licenseType": "",
+        "readScale": "Disabled",
+        "highAvailabilityReplicaCount": "0",
+        "minCapacity": "",
+        "autoPauseDelay": "",
+        "requestedBackupStorageRedundancy": "Local",
+        "isLedgerOn": false,
+        "maintenanceConfigurationId": "/subscriptions/fefd6011-af8c-4269-8372-c5a7183d91d3/providers/Microsoft.Maintenance/publicMaintenanceConfigurations/SQL_Default"
+      },
+      "sku": {
+        "name": "[parameters('databaseSkuName')]",
+        "tier": "[parameters('databaseTier')]",
+        "capacity": "[parameters('databaseCapacity')]"
+      }
+    },
+
+    {
+      "type": "Microsoft.ServiceBus/namespaces",
+      "apiVersion": "2018-01-01-preview",
+      "name": "[variables('serviceBusName')]",
+      "location": "[resourceGroup().location]",
+      "tags": {
+        "displayName": "service-bus"
+      },
+      "sku": {
+        "name": "[parameters('serviceBusTier')]",
+        "tier": "[parameters('serviceBusTier')]",
+        "capacity": "[parameters('serviceBusCapacity')]"
+      },
+      "properties": {
+        "zoneRedundant": false
+      }
+    }
+  ],
+  "outputs": {}
+}

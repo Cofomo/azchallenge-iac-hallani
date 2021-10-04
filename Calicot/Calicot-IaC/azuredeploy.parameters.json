@@ -1,0 +1,57 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "subscriptionId": {
+      "value": "fefd6011-af8c-4269-8372-c5a7183d91d3"
+    },
+    "serverFarmResourceGroup": {
+      "value": "azchallenge-hallani-dev-rg"
+    },
+    "storageAccountType": {
+      "value": "Standard_LRS"
+    },
+    "storageAccountKind": {
+      "value": "StorageV2"
+    },
+    "storageAccountAccessTier": {
+      "value": "Hot"
+    },
+    "functionAppSku": {
+      "value": "Dynamic"
+    },
+    "functionAppSkuCode": {
+      "value": "Y1"
+    },
+    "webAppSku": {
+      "value": "Free"
+    },
+    "webAppSkuCode": {
+      "value": "F1"
+    },
+    "webAppKind": {
+      "value": "windows"
+    },
+    "webAppCurrentStack": {
+      "value": "dotnetcore"
+    },
+    "sqlServerAdministratorLogin": {
+      "value": "hatem"
+    },
+    "databaseSkuName": {
+      "value": "Basic"
+    },
+    "databaseTier": {
+      "value": "Basic"
+    },
+    "databaseCapacity": {
+      "value": 5
+    },
+    "serviceBusTier": {
+      "value": "Basic"
+    },
+    "serviceBusCapacity": {
+      "value": 1
+    }
+  }
+}
