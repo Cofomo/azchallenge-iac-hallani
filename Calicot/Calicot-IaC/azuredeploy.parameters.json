@@ -29,22 +29,6 @@
     "webAppCurrentStack": {
       "value": "dotnetcore"
     },
-    //"sqlServerAdministratorLogin": {
-    //  "reference": {
-    //    "keyVault": {
-    //      "id": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', resourceGroup().name, '/providers/Microsoft.KeyVault/vaults/Calicot')]"
-    //    },
-    //    "secretName": "sqlServerAdministratorLogin"
-    //  }
-    //},
-    //"sqlServerAdministratorLoginPassword": {
-    //  "reference": {
-    //    "keyVault": {
-    //      "id": "/subscriptions/fefd6011-af8c-4269-8372-c5a7183d91d3/resourceGroups/azchallenge-hallani-dev-rg/providers/Microsoft.KeyVault/vaults/Calicot"
-    //    },
-    //    "secretName": "sqlServerAdministratorLoginPassword"
-    //  }
-    //},
     "databaseSkuName": {
       "value": "Basic"
     },
