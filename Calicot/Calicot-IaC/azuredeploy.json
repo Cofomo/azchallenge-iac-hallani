@@ -251,7 +251,7 @@
             {
               "type": "Microsoft.Sql/servers",
               "apiVersion": "2018-06-01-preview",
-              "name": "[concat('sqlserver', uniqueString(resourceGroup().id))]", //"[parameters('sqlServerName')]",
+              "name": "[concat('sqlserver', uniqueString(resourceGroup().id))]",
               "location": "[resourceGroup().location]",
               "properties": {
                 "administratorLogin": "[parameters('sqlServerAdministratorLogin')]",
@@ -312,22 +312,31 @@
       }
     },
     {
-      "type": "Microsoft.ServiceBus/namespaces",
       "apiVersion": "2018-01-01-preview",
-      "name": "[parameters('serviceBusName')]",
       "location": "[resourceGroup().location]",
-      "tags": {
-        "displayName": "service-bus"
+      "name": "[parameters('serviceBusName')]",
+      "properties": {
+        "zoneRedundant": false
       },
       "sku": {
         "name": "[parameters('serviceBusTier')]",
         "tier": "[parameters('serviceBusTier')]",
         "capacity": "[parameters('serviceBusCapacity')]"
       },
-      "properties": {
-        "zoneRedundant": false
-      }
+      "tags": {
+        "displayName": "service-bus"
+      },
+      "type": "Microsoft.ServiceBus/namespaces"
     }
   ],
-  "outputs": {}
+  "outputs": {
+    "Deployment": {
+      "type": "string",
+      "value": "[deployment().name]"
+    },
+    "Subscription": {
+      "type": "object",
+      "value": "[subscription()]"
+    }
+  }
 }

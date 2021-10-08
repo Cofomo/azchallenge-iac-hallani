@@ -1,8 +1,8 @@
 #Requires -Version 3.0
 
 Param(
+    [string] [Parameter(Mandatory=$true)] $ResourceGroupName,
     [string] $ResourceGroupLocation = 'canadacentral',
-    [string] $ResourceGroupName = 'azchallenge-hallani-dev-rg',
     [string] $StorageContainerName = $ResourceGroupName.ToLowerInvariant() + '-stageartifacts',
     [string] $TemplateFile = 'azuredeploy.json',
     [string] $TemplateParametersFile = 'azuredeploy.parameters.json',
