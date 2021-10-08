@@ -1,0 +1,48 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "storageAccountType": {
+      "value": "Standard_LRS"
+    },
+    "storageAccountKind": {
+      "value": "StorageV2"
+    },
+    "storageAccountAccessTier": {
+      "value": "Hot"
+    },
+    "functionAppSku": {
+      "value": "Dynamic"
+    },
+    "functionAppSkuCode": {
+      "value": "Y1"
+    },
+    "webAppSku": {
+      "value": "Free"
+    },
+    "webAppSkuCode": {
+      "value": "F1"
+    },
+    "webAppKind": {
+      "value": "windows"
+    },
+    "webAppCurrentStack": {
+      "value": "dotnetcore"
+    },
+    "databaseSkuName": {
+      "value": "Basic"
+    },
+    "databaseTier": {
+      "value": "Basic"
+    },
+    "databaseCapacity": {
+      "value": 5
+    },
+    "serviceBusTier": {
+      "value": "Basic"
+    },
+    "serviceBusCapacity": {
+      "value": 1
+    }
+  }
+}
