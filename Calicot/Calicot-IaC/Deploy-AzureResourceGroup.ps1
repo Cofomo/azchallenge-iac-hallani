@@ -3,7 +3,6 @@
 Param(
     [string] [Parameter(Mandatory=$true)] $ResourceGroupName,
     [string] $ResourceGroupLocation = 'canadacentral',
-    [string] $StorageContainerName = $ResourceGroupName.ToLowerInvariant() + '-stageartifacts',
     [string] $TemplateFile = 'azuredeploy.json',
     [string] $TemplateParametersFile = 'azuredeploy.parameters.json',
     [switch] $ValidateOnly
