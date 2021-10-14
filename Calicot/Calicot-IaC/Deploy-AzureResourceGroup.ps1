@@ -13,7 +13,7 @@ if (Get-Module -ListAvailable -Name Az) {
 } 
 else {
     Write-Host "Module does not exist. It will be installed..."
-    Install-Module -Name Az -Scope CurrentUser -Repository PSGallery -Force -Verbose 
+    Install-Module -Name Az -Scope CurrentUser -Repository PSGallery -Force -Verbose -AllowClobber
 }
 
 try {
