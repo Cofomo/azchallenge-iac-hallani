@@ -13,5 +13,5 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Run a one-line script
-      run: .\Calicot\Calicot-IaC\Deploy-AzureResourceGroup.ps1 -ResourceGroupName azchallenge-hallani-dev-rg
+      run: .\Calicot\Calicot-IaC\Deploy-AzureResourceGroup.ps1 -ResourceGroupName azchallenge-hallani-dev-rg -ResourceGroupLocation canadacentral
       shell: pwsh
