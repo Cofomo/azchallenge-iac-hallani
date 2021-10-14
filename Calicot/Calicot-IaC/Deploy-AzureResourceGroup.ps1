@@ -8,6 +8,14 @@ Param(
     [switch] $ValidateOnly
 )
 
+if (Get-Module -ListAvailable -Name Az) {
+    Write-Host "Module Az exists"
+} 
+else {
+    Write-Host "Module does not exist. It will be installed..."
+    Install-Module -Name Az -Scope CurrentUser -Repository PSGallery -Force -Verbose 
+}
+
 try {
     [Microsoft.Azure.Common.Authentication.AzureSession]::ClientFactory.AddUserAgent("VSAzureTools-$UI$($host.name)".replace(' ','_'), '3.0.0')
 } catch { }
