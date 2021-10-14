@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  push:
+    branches:
+    - Epreuve2
+    - main
+
+jobs:
+  build:
+
+    runs-on: windows-2019
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install dependencies
+      run: .\Calicot\Calicot-IaC\Install-Dependencies.ps1
+      shell: pwsh
+    - name: Login via Az module
+      uses: azure/login@v1
+      with:
+        creds: ${{secrets.AZURE_CREDENTIALS}}
+        enable-AzPSSession: true
+    - name: Deploy Azure resources
+      run: .\Calicot\Calicot-IaC\Deploy-AzureResourceGroup.ps1 -ResourceGroupName ${{secrets.AZURE_RG_NAME}} -ResourceGroupLocation ${{secrets.AZURE_RG_LOCATION}}
+      shell: pwsh
