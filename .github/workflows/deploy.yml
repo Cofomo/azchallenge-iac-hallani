@@ -7,7 +7,7 @@ on:
     - main
 
 jobs:
-  build:
+  deploy:
 
     runs-on: windows-2019
 
