@@ -23,4 +23,4 @@ jobs:
         uses: actions/checkout@v2
       - name: Perform a Pester test from the command-line
         shell: pwsh
-        run: Deploy-AzureResourceGroup.ps1 resultsfile.log | Should -Be $true
+        run: ../../Calicot/Calicot-IaC/Deploy-AzureResourceGroup.ps1 resultsfile.log | Should -Be $true
