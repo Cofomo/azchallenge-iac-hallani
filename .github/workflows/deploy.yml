@@ -38,98 +38,98 @@ jobs:
         Set-PSRepository PSGallery -InstallationPolicy Trusted
         Install-Module ${{ steps.psmodulecache.outputs.needed }} -ErrorAction Stop -Force -Verbose -AllowClobber
 
-  deploy-dev:
-    environment: dev
-    needs: prepare
-    runs-on: windows-2019
-    steps:
-    - uses: actions/checkout@v2
+  #deploy-dev:
+  #  environment: dev
+  #  needs: prepare
+  #  runs-on: windows-2019
+  #  steps:
+  #  - uses: actions/checkout@v2
 
-    - name: Set required PowerShell modules
-      id: psmodulecache
-      uses: potatoqualitee/psmodulecache@v1
-      with:
-        modules-to-cache: Az
-    - name: Setup PowerShell module cache
-      id: cacher
-      uses: actions/cache@v2
-      with:
-        path: ${{ steps.psmodulecache.outputs.modulepath }}
-        key: ${{ steps.psmodulecache.outputs.keygen }}
+  #  - name: Set required PowerShell modules
+  #    id: psmodulecache
+  #    uses: potatoqualitee/psmodulecache@v1
+  #    with:
+  #      modules-to-cache: Az
+  #  - name: Setup PowerShell module cache
+  #    id: cacher
+  #    uses: actions/cache@v2
+  #    with:
+  #      path: ${{ steps.psmodulecache.outputs.modulepath }}
+  #      key: ${{ steps.psmodulecache.outputs.keygen }}
 
-    - name: Login via Az module
-      uses: azure/login@v1
-      with:
-        creds: ${{secrets.AZURE_CREDENTIALS}}
-        enable-AzPSSession: true
+  #  - name: Login via Az module
+  #    uses: azure/login@v1
+  #    with:
+  #      creds: ${{secrets.AZURE_CREDENTIALS}}
+  #      enable-AzPSSession: true
 
-    - name: Deploy Azure resources
-      env: 
-        AZURE_RG_NAME: ${{ secrets.AZURE_RG_NAME }}
-      shell: pwsh
-      run: |
-        .\Calicot\Calicot-IaC\Deploy-AzureResourceGroup.ps1 -ResourceGroupName "$env:AZURE_RG_NAME" -ResourceGroupLocation ${{secrets.AZURE_RG_LOCATION}}
+  #  - name: Deploy Azure resources
+  #    env: 
+  #      AZURE_RG_NAME: ${{ secrets.AZURE_RG_NAME }}
+  #    shell: pwsh
+  #    run: |
+  #      .\Calicot\Calicot-IaC\Deploy-AzureResourceGroup.ps1 -ResourceGroupName "$env:AZURE_RG_NAME" -ResourceGroupLocation ${{secrets.AZURE_RG_LOCATION}}
 
-  deploy-accept:
-    environment: accept
-    needs: deploy-dev
-    runs-on: windows-2019
-    steps:
-    - uses: actions/checkout@v2
+  #deploy-accept:
+  #  environment: accept
+  #  needs: deploy-dev
+  #  runs-on: windows-2019
+  #  steps:
+  #  - uses: actions/checkout@v2
 
-    - name: Set required PowerShell modules
-      id: psmodulecache
-      uses: potatoqualitee/psmodulecache@v1
-      with:
-        modules-to-cache: Az
-    - name: Setup PowerShell module cache
-      id: cacher
-      uses: actions/cache@v2
-      with:
-        path: ${{ steps.psmodulecache.outputs.modulepath }}
-        key: ${{ steps.psmodulecache.outputs.keygen }}
+  #  - name: Set required PowerShell modules
+  #    id: psmodulecache
+  #    uses: potatoqualitee/psmodulecache@v1
+  #    with:
+  #      modules-to-cache: Az
+  #  - name: Setup PowerShell module cache
+  #    id: cacher
+  #    uses: actions/cache@v2
+  #    with:
+  #      path: ${{ steps.psmodulecache.outputs.modulepath }}
+  #      key: ${{ steps.psmodulecache.outputs.keygen }}
 
-    - name: Login via Az module
-      uses: azure/login@v1
-      with:
-        creds: ${{secrets.AZURE_CREDENTIALS}}
-        enable-AzPSSession: true
+  #  - name: Login via Az module
+  #    uses: azure/login@v1
+  #    with:
+  #      creds: ${{secrets.AZURE_CREDENTIALS}}
+  #      enable-AzPSSession: true
 
-    - name: Deploy Azure resources
-      env: 
-        AZURE_RG_NAME: ${{ secrets.AZURE_RG_NAME }}
-      shell: pwsh
-      run: |
-        .\Calicot\Calicot-IaC\Deploy-AzureResourceGroup.ps1 -ResourceGroupName "$env:AZURE_RG_NAME" -ResourceGroupLocation ${{secrets.AZURE_RG_LOCATION}}
+  #  - name: Deploy Azure resources
+  #    env: 
+  #      AZURE_RG_NAME: ${{ secrets.AZURE_RG_NAME }}
+  #    shell: pwsh
+  #    run: |
+  #      .\Calicot\Calicot-IaC\Deploy-AzureResourceGroup.ps1 -ResourceGroupName "$env:AZURE_RG_NAME" -ResourceGroupLocation ${{secrets.AZURE_RG_LOCATION}}
 
-  deploy-prod:
-    environment: prod
-    needs: deploy-accept
-    runs-on: windows-2019
-    steps:
-    - uses: actions/checkout@v2
+  #deploy-prod:
+  #  environment: prod
+  #  needs: deploy-accept
+  #  runs-on: windows-2019
+  #  steps:
+  #  - uses: actions/checkout@v2
 
-    - name: Set required PowerShell modules
-      id: psmodulecache
-      uses: potatoqualitee/psmodulecache@v1
-      with:
-        modules-to-cache: Az
-    - name: Setup PowerShell module cache
-      id: cacher
-      uses: actions/cache@v2
-      with:
-        path: ${{ steps.psmodulecache.outputs.modulepath }}
-        key: ${{ steps.psmodulecache.outputs.keygen }}
+  #  - name: Set required PowerShell modules
+  #    id: psmodulecache
+  #    uses: potatoqualitee/psmodulecache@v1
+  #    with:
+  #      modules-to-cache: Az
+  #  - name: Setup PowerShell module cache
+  #    id: cacher
+  #    uses: actions/cache@v2
+  #    with:
+  #      path: ${{ steps.psmodulecache.outputs.modulepath }}
+  #      key: ${{ steps.psmodulecache.outputs.keygen }}
 
-    - name: Login via Az module
-      uses: azure/login@v1
-      with:
-        creds: ${{secrets.AZURE_CREDENTIALS}}
-        enable-AzPSSession: true
+  #  - name: Login via Az module
+  #    uses: azure/login@v1
+  #    with:
+  #      creds: ${{secrets.AZURE_CREDENTIALS}}
+  #      enable-AzPSSession: true
 
-    - name: Deploy Azure resources
-      env: 
-        AZURE_RG_NAME: ${{ secrets.AZURE_RG_NAME }}
-      shell: pwsh
-      run: |
-        .\Calicot\Calicot-IaC\Deploy-AzureResourceGroup.ps1 -ResourceGroupName "$env:AZURE_RG_NAME" -ResourceGroupLocation ${{secrets.AZURE_RG_LOCATION}}
+  #  - name: Deploy Azure resources
+  #    env: 
+  #      AZURE_RG_NAME: ${{ secrets.AZURE_RG_NAME }}
+  #    shell: pwsh
+  #    run: |
+  #      .\Calicot\Calicot-IaC\Deploy-AzureResourceGroup.ps1 -ResourceGroupName "$env:AZURE_RG_NAME" -ResourceGroupLocation ${{secrets.AZURE_RG_LOCATION}}
