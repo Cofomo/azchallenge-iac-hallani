@@ -82,7 +82,7 @@
     },
     "keyVaultName": {
       "type": "string",
-      "defaultValue": "Calicot"
+      "defaultValue": "[concat('kv-', uniqueString(resourceGroup().id))]"
     }
   },
   "variables": {},
