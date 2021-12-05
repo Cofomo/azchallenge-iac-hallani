@@ -3,7 +3,7 @@ name: CI
 on:
   push:
     branches:
-    - Epreuve3
+    - Epreuve4
     - main
 
   # Allows you to run this workflow manually from the Actions tab
@@ -20,7 +20,7 @@ jobs:
       id: psmodulecache
       uses: potatoqualitee/psmodulecache@v1
       with:
-        modules-to-cache: Az
+        modules-to-cache: Az, Pester
       
     # Setting up the powershell module cache
     - name: Setup PowerShell module cache
@@ -70,6 +70,14 @@ jobs:
       run: |
         .\Calicot\Calicot-IaC\Deploy-AzureResourceGroup.ps1 -ResourceGroupName "$env:AZURE_RG_NAME" -ResourceGroupLocation ${{secrets.AZURE_RG_LOCATION}}
 
+    - name: Test if Azure resources are deployed successfully
+      env: 
+        AZURE_RG_NAME: ${{ secrets.AZURE_RG_NAME }}
+        AZURE_RG_LOCATION: ${{ secrets.AZURE_RG_LOCATION }}
+      shell: pwsh
+      run: |
+         Invoke-Pester .\Calicot\Calicot-IaC\Deploy-AzureResourceGroup.Tests.ps1 -Output Detailed
+
   deploy-accept:
     environment: accept
     needs: deploy-dev
@@ -102,6 +110,14 @@ jobs:
       run: |
         .\Calicot\Calicot-IaC\Deploy-AzureResourceGroup.ps1 -ResourceGroupName "$env:AZURE_RG_NAME" -ResourceGroupLocation ${{secrets.AZURE_RG_LOCATION}}
 
+    - name: Test if Azure resources are deployed successfully
+      env: 
+        AZURE_RG_NAME: ${{ secrets.AZURE_RG_NAME }}
+        AZURE_RG_LOCATION: ${{ secrets.AZURE_RG_LOCATION }}
+      shell: pwsh
+      run: |
+         Invoke-Pester .\Calicot\Calicot-IaC\Deploy-AzureResourceGroup.Tests.ps1 -Output Detailed
+
   deploy-prod:
     environment: prod
     needs: deploy-accept
@@ -133,3 +149,11 @@ jobs:
       shell: pwsh
       run: |
         .\Calicot\Calicot-IaC\Deploy-AzureResourceGroup.ps1 -ResourceGroupName "$env:AZURE_RG_NAME" -ResourceGroupLocation ${{secrets.AZURE_RG_LOCATION}}
+
+    - name: Test if Azure resources are deployed successfully
+      env: 
+        AZURE_RG_NAME: ${{ secrets.AZURE_RG_NAME }}
+        AZURE_RG_LOCATION: ${{ secrets.AZURE_RG_LOCATION }}
+      shell: pwsh
+      run: |
+         Invoke-Pester .\Calicot\Calicot-IaC\Deploy-AzureResourceGroup.Tests.ps1 -Output Detailed
