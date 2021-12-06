@@ -18,10 +18,10 @@
       "value": "Y1"
     },
     "webAppSku": {
-      "value": "Free"
+      "value": "Shared"
     },
     "webAppSkuCode": {
-      "value": "F1"
+      "value": "D1"
     },
     "webAppKind": {
       "value": "windows"
